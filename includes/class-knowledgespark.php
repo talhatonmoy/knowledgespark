@@ -2,6 +2,8 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 final class KnowledgeSpark {
  const OPTION = 'knowledgespark_settings';
+ const JOB = 'knowledgespark_index_job';
+ const BATCH = 100;
  public static function boot() {
   add_action('admin_menu', [__CLASS__, 'menu']);
   add_filter('get_user_option_meta-box-order_post', [__CLASS__, 'box_order']);
@@ -12,6 +14,7 @@ final class KnowledgeSpark {
   add_action('save_post_post', [__CLASS__, 'schedule'], 10, 3);
   add_action('before_delete_post', [__CLASS__, 'remove']);
   add_action('knowledgespark_sync', [__CLASS__, 'sync']);
+  add_action('knowledgespark_index_batch', [__CLASS__, 'index_batch']);
   add_action('wp_abilities_api_categories_init', [__CLASS__, 'ability_category']);
   add_action('wp_abilities_api_init', [__CLASS__, 'abilities']);
   add_filter('wp_is_application_passwords_available', [__CLASS__, 'app_passwords_available']);
@@ -42,7 +45,7 @@ final class KnowledgeSpark {
  }
  public static function page() {
   $s=self::settings();
-  echo '<div class="wrap"><h1>KnowledgeSpark 0.0.1</h1><p>Connect a dedicated Qdrant collection, test it, then index published posts. Enable Cloud Inference in your Qdrant cluster and select a free model.</p><p>Published post text is sent to Qdrant. When AI is configured, the current editor text (including unsaved drafts) and candidate excerpts are sent to your AI provider when you request suggestions. AI usage may incur separate charges. Credentials stay on the WordPress server.</p><form method="post" action="options.php">';
+  echo '<div class="wrap"><h1>KnowledgeSpark 0.0.3</h1><p>Connect a dedicated Qdrant collection, test it, then index published posts. Enable Cloud Inference in your Qdrant cluster and select a free model.</p><p>Published post text is sent to Qdrant. When AI is configured, the current editor text (including unsaved drafts) and candidate excerpts are sent to your AI provider when you request suggestions. AI usage may incur separate charges. Credentials stay on the WordPress server.</p><form method="post" action="options.php">';
   settings_fields('knowledgespark');
   echo '<table class="form-table"><tbody>';
   $fields=['url'=>'Qdrant cluster HTTPS URL','key'=>'Qdrant API key','collection'=>'Dedicated collection name','embedding'=>'Cloud Inference model','dimensions'=>'Embedding dimensions','ai_url'=>'AI API base URL (OpenAI-compatible)','ai_key'=>'AI API key (optional)','ai_model'=>'AI model'];
@@ -54,7 +57,7 @@ final class KnowledgeSpark {
   }
   echo '<tr><th><label for="ks-agent_access">Allow Application Password access</label></th><td><label><input type="checkbox" id="ks-agent_access" name="'.esc_attr(self::OPTION).'[agent_access]" value="1"'.(!empty($s['agent_access'])?' checked':'').'> Enable WordPress Application Passwords so AI agents can connect to this site through a WordPress MCP plugin such as MCP Adapter. Only for local or development sites served over plain HTTP — credentials travel unencrypted there. HTTPS sites do not need this.</label><p class="description">Create passwords per user under Users → Profile. Disable this again when agent access is no longer needed.</p></td></tr></tbody></table><p>Use a collection dedicated to this site. Changing the embedding model requires a new collection and full indexing, even when its dimensions are unchanged. Default MiniLM uses a short context window; this MVP embeds compact title, headings, and excerpt text.</p>';
   submit_button();
-  echo '</form><div id="ks-index-controls"><h2>Index</h2><p class="ks-index-warning"><strong>Keep this page open while indexing.</strong> The browser drives the batch process; closing or navigating away stops it. You can safely resume later because already indexed posts will be skipped.</p><p>Save settings first. Changed posts are synchronized through WP-Cron. Run indexing again to retry failures. Reset deletes only the configured collection.</p><button type="button" class="button" id="ks-test">Test connection</button> <button type="button" class="button button-primary" id="ks-index">Index published posts</button> <button type="button" class="button" id="ks-reset">Reset collection</button><div id="ks-index-status" role="status" aria-live="polite"></div></div></div>';
+  echo '</form><div id="ks-index-controls"><h2>Index</h2><p class="ks-index-warning"><strong>Indexing runs on the server.</strong> You can close this page once indexing starts: batches of 100 posts are embedded in the background, and already indexed posts are skipped. Reopen this page to watch progress, stop the run, or run indexing again to retry failures. On sites with no traffic, a system cron entry keeps long runs moving (see readme.txt).</p><p>Save settings first. Changed posts are synchronized through WP-Cron. Run indexing again to retry failures. Reset deletes only the configured collection and stops a running job.</p><button type="button" class="button" id="ks-test">Test connection</button> <button type="button" class="button button-primary" id="ks-index">Index published posts</button> <button type="button" class="button" id="ks-reset">Reset collection</button><div id="ks-index-status" role="status" aria-live="polite"></div></div></div>';
  }
  public static function metabox() { add_meta_box('knowledgespark','KnowledgeSpark',[__CLASS__,'box'],'post','normal','high',['__block_editor_compatible_meta_box'=>true]); }
  public static function box_order($order) {
@@ -75,12 +78,12 @@ final class KnowledgeSpark {
   if (!in_array($hook,['post.php','post-new.php','settings_page_knowledgespark'],true)) { return; }
   $screen=get_current_screen();
   if ($hook!=='settings_page_knowledgespark' && $screen->post_type!=='post') { return; }
-  wp_enqueue_script('knowledgespark',plugins_url('assets/admin.js',dirname(__DIR__).'/knowledgespark.php'),[], '0.0.1.5',true);
-  wp_enqueue_style('knowledgespark',plugins_url('assets/admin.css',dirname(__DIR__).'/knowledgespark.php'),[], '0.0.1.5');
+  wp_enqueue_script('knowledgespark',plugins_url('assets/admin.js',dirname(__DIR__).'/knowledgespark.php'),[], '0.0.3',true);
+  wp_enqueue_style('knowledgespark',plugins_url('assets/admin.css',dirname(__DIR__).'/knowledgespark.php'),[], '0.0.3');
   wp_localize_script('knowledgespark','KnowledgeSpark',['root'=>rest_url('knowledgespark/v1/'),'nonce'=>wp_create_nonce('wp_rest'),'postId'=>get_the_ID() ?: 0]);
  }
  public static function routes() {
-  foreach(['test','index','reset','suggest','apply'] as $action) {
+  foreach(['test','index','reset','suggest','apply','status','stop'] as $action) {
    register_rest_route('knowledgespark/v1','/'.$action,['methods'=>'POST','callback'=>[__CLASS__,'api_'.$action],'permission_callback'=>function($request) use($action) {
     return in_array($action,['suggest','apply'],true) ? (absint($request['post_id']) && current_user_can('edit_post',absint($request['post_id']))) : current_user_can('manage_options');
    }]);
@@ -95,14 +98,14 @@ final class KnowledgeSpark {
   if(!is_array($data)) { return new WP_Error('ks_json','Remote service returned an invalid response.',['status'=>502]); }
   return $data;
  }
- private static function qdrant($method,$path,$body=null) {
+ private static function qdrant($method,$path,$body=null,$timeout=45) {
   $s=self::settings();
   if(!$s['url'] || !$s['key']) { return new WP_Error('ks_config','Configure Qdrant in Settings → KnowledgeSpark first.',['status'=>400]); }
   $url=$s['url'].'/collections/'.rawurlencode($s['collection']).$path;
   $headers=['Content-Type'=>'application/json','api-key'=>$s['key']];
   $last=null;
   for($attempt=1;$attempt<=3;$attempt++) {
-   $last=self::request($url,$method,$body,$headers);
+   $last=self::request($url,$method,$body,$headers,$timeout);
    if(!is_wp_error($last)) { return $last; }
    $data=is_array($last->get_error_data()) ? $last->get_error_data() : [];
    $transient=preg_match('/cURL error (28|35|52|53|56|60):/',$last->get_error_message()) || in_array((int)($data['remote_status'] ?? 0),[502,503,504],true);
@@ -125,11 +128,11 @@ final class KnowledgeSpark {
   return $r;
  }
  public static function api_test() { $r=self::ensure(); return is_wp_error($r)?$r:['message'=>'Connected. Collection is ready. Run indexing to verify Cloud Inference and model access.']; }
- public static function api_reset() { $r=self::qdrant('DELETE',''); return is_wp_error($r)?$r:['message'=>'Collection deleted. Run indexing to recreate it.']; }
+ public static function api_reset() { self::stop_job(); $r=self::qdrant('DELETE',''); return is_wp_error($r)?$r:['message'=>'Collection deleted. Run indexing to recreate it.']; }
  public static function plain($text) { return trim(preg_replace('/\s+/u',' ',html_entity_decode(wp_strip_all_tags(strip_shortcodes($text)),ENT_QUOTES,'UTF-8'))); }
  private static function clip($text,$length) { return function_exists('mb_substr')?mb_substr($text,0,$length):substr($text,0,$length); }
  private static function public_post($post) { return $post && $post->post_type==='post' && $post->post_status==='publish' && !$post->post_password && is_post_publicly_viewable($post); }
- private static function profile($post) {
+ public static function profile($post) {
   preg_match_all('/<h[1-6]\b[^>]*>(.*?)<\/h[1-6]>/is',$post->post_content,$matches);
   $headings=self::plain(implode(' | ',$matches[1]));
   return self::clip('Title: '.self::plain($post->post_title),220).'\nHeadings: '.self::clip($headings,400).'\nExcerpt: '.self::clip(self::plain($post->post_excerpt ?: $post->post_content),500);
@@ -143,31 +146,110 @@ final class KnowledgeSpark {
   $r=self::qdrant('POST','/points/delete?wait=true',['points'=>[(int)$id]]);
   if(is_wp_error($r)) { update_post_meta($id,'_ks_sync_error',$r->get_error_message()); }
  }
+ private static function point($post,$id) {
+  $s=self::settings(); $text=self::profile($post);
+  $fingerprint=hash('sha256',wp_json_encode([$text,$s['embedding'],$s['dimensions'],get_permalink($id),$post->post_modified_gmt]));
+  return ['id'=>(int)$id,'vector'=>['text'=>$text,'model'=>$s['embedding']],'payload'=>['post_id'=>(int)$id,'title'=>self::plain($post->post_title),'url'=>get_permalink($id),'modified'=>$post->post_modified_gmt,'fingerprint'=>$fingerprint]];
+ }
+ private static function stored_current($post,$id,$payload,$fingerprint) {
+  if(isset($payload['fingerprint'])) { return hash_equals($fingerprint,(string)$payload['fingerprint']); }
+  // Existing 0.0.1 points have no fingerprint; preserve them when their revision and URL match.
+  return isset($payload['modified'],$payload['url']) && $payload['modified']===$post->post_modified_gmt && $payload['url']===get_permalink($id);
+ }
  public static function sync($id) {
   $p=get_post($id);
   if(!self::public_post($p)) { self::remove($id); return true; }
-  $s=self::settings(); $text=self::profile($p);
-  $fingerprint=hash('sha256',wp_json_encode([$text,$s['embedding'],$s['dimensions'],get_permalink($id),$p->post_modified_gmt]));
+  $pt=self::point($p,$id);
   // Check the actual collection, so resets, changed clusters, and interrupted runs are safe.
-  $stored=self::qdrant('POST','/points',['ids'=>[(int)$id],'with_payload'=>true,'with_vector'=>false]);
+  $stored=self::qdrant('POST','/points',['ids'=>[$pt['id']],'with_payload'=>true,'with_vector'=>false]);
   if(is_wp_error($stored)) { return $stored; }
-  $payload=$stored['result'][0]['payload'] ?? [];
-  $matches=isset($payload['fingerprint']) && hash_equals($fingerprint,(string)$payload['fingerprint']);
-  // Existing 0.0.1 points have no fingerprint; preserve them when their revision and URL match.
-  $legacy=!isset($payload['fingerprint']) && isset($payload['modified'],$payload['url']) && $payload['modified']===$p->post_modified_gmt && $payload['url']===get_permalink($id);
-  if($matches || $legacy) { delete_post_meta($id,'_ks_sync_error'); return 'skipped'; }
-  $r=self::qdrant('PUT','/points?wait=true',['points'=>[['id'=>(int)$id,'vector'=>['text'=>$text,'model'=>$s['embedding']],'payload'=>['post_id'=>(int)$id,'title'=>self::plain($p->post_title),'url'=>get_permalink($id),'modified'=>$p->post_modified_gmt,'fingerprint'=>$fingerprint]]]]);
+  if(self::stored_current($p,$id,$stored['result'][0]['payload'] ?? [],$pt['payload']['fingerprint'])) { delete_post_meta($id,'_ks_sync_error'); return 'skipped'; }
+  $r=self::qdrant('PUT','/points?wait=true',['points'=>[$pt]]);
   if(is_wp_error($r)) { update_post_meta($id,'_ks_sync_error',$r->get_error_message()); return $r; }
   delete_post_meta($id,'_ks_sync_error'); return true;
  }
- public static function api_index($request) {
+ private static function job($set=null) {
+  if(is_array($set)) { update_option(self::JOB,$set,false); return $set; }
+  $job=get_option(self::JOB,[]);
+  return is_array($job)?$job:[];
+ }
+ private static function stop_job() {
+  $job=self::job();
+  if(($job['status'] ?? '')==='running') { $job['status']='stopped'; $job['updated']=time(); self::job($job); }
+  wp_clear_scheduled_hook('knowledgespark_index_batch');
+ }
+ public static function api_index($request=null) {
+  $job=self::job();
+  if(($job['status'] ?? '')==='running') { return $job; }
   $ready=self::ensure(); if(is_wp_error($ready)) { return $ready; }
+  self::job(['status'=>'running','cursor'=>0,'indexed'=>0,'skipped'=>0,'failed'=>0,'errors'=>[],'started'=>time(),'updated'=>time()]);
+  wp_clear_scheduled_hook('knowledgespark_index_batch');
+  wp_schedule_single_event(time(),'knowledgespark_index_batch');
+  spawn_cron();
+  return self::job();
+ }
+ public static function api_status() {
+  $job=self::job();
+  if(!isset($job['status'])) { return ['status'=>'idle','cursor'=>0,'indexed'=>0,'skipped'=>0,'failed'=>0,'errors'=>[]]; }
+  return $job;
+ }
+ public static function api_stop() {
+  self::stop_job();
+  return self::api_status();
+ }
+ public static function index_batch() {
+  $job=self::job();
+  if(($job['status'] ?? '')!=='running') { return; }
+  // Schedule the successor before working, so a PHP kill mid-run can never strand the chain.
+  wp_clear_scheduled_hook('knowledgespark_index_batch');
+  wp_schedule_single_event(time()+60,'knowledgespark_index_batch');
+  $done=false; $budget=microtime(true)+20;
+  do {
+   $r=self::process_batch((int)$job['cursor']);
+   $job['cursor']=$r['cursor']; $job['indexed']+=$r['indexed']; $job['skipped']+=$r['skipped']; $job['failed']+=$r['failed'];
+   foreach($r['errors'] as $error) { if(count($job['errors'])>=20) { break; } $job['errors'][]=$error; }
+   $job['updated']=time(); $done=$r['done'];
+   self::job($job);
+  } while(!$done && microtime(true)<$budget);
+  if($done) { $job['status']='done'; $job['updated']=time(); self::job($job); wp_clear_scheduled_hook('knowledgespark_index_batch'); return; }
+  spawn_cron();
+ }
+ private static function process_batch($cursor) {
   global $wpdb;
-  $cursor=absint($request['cursor']);
-  $ids=$wpdb->get_col($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_type = 'post' AND post_status = 'publish' AND post_password = '' AND ID > %d ORDER BY ID ASC LIMIT 1",$cursor));
-  $indexed=0; $skipped=0; $errors=[];
-  foreach($ids as $id) { $r=self::sync((int)$id); if(is_wp_error($r)) { $errors[]='Post '.$id.': '.$r->get_error_message(); } elseif($r==='skipped') { $skipped++; } else { $indexed++; } $cursor=(int)$id; }
-  return ['cursor'=>$cursor,'done'=>count($ids)<1,'indexed'=>$indexed,'skipped'=>$skipped,'failed'=>count($errors),'errors'=>$errors];
+  $ids=$wpdb->get_col($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_type = 'post' AND post_status = 'publish' AND post_password = '' AND ID > %d ORDER BY ID ASC LIMIT %d",$cursor,self::BATCH));
+  $out=['cursor'=>$cursor,'indexed'=>0,'skipped'=>0,'failed'=>0,'errors'=>[],'done'=>count($ids)<self::BATCH];
+  if(!$ids) { return $out; }
+  $out['cursor']=(int)end($ids);
+  $points=[];
+  foreach($ids as $id) {
+   $id=(int)$id; $p=get_post($id);
+   if(!self::public_post($p)) { self::remove($id); continue; }
+   $points[$id]=self::point($p,$id);
+  }
+  if(!$points) { return $out; }
+  $stored=self::qdrant('POST','/points',['ids'=>array_keys($points),'with_payload'=>true,'with_vector'=>false]);
+  if(is_wp_error($stored)) { return self::fail_batch($out,$points,$stored->get_error_message()); }
+  $payloads=[];
+  foreach(($stored['result'] ?? []) as $point) { if(isset($point['id'])) { $payloads[(int)$point['id']]=$point['payload'] ?? []; } }
+  $upsert=[];
+  foreach($points as $id=>$pt) {
+   // Re-check right before the upsert so a post deleted mid-batch is never resurrected.
+   $p=get_post($id);
+   if(!$p || !self::public_post($p)) { self::remove($id); continue; }
+   if(self::stored_current($p,$id,$payloads[$id] ?? [],$pt['payload']['fingerprint'])) { delete_post_meta($id,'_ks_sync_error'); $out['skipped']++; continue; }
+   $upsert[$id]=$pt;
+  }
+  if(!$upsert) { return $out; }
+  $r=self::qdrant('PUT','/points?wait=true',['points'=>array_values($upsert)],120);
+  if(is_wp_error($r)) { return self::fail_batch($out,$upsert,$r->get_error_message()); }
+  foreach($upsert as $id=>$pt) { delete_post_meta($id,'_ks_sync_error'); $out['indexed']++; }
+  return $out;
+ }
+ private static function fail_batch($out,$posts,$message) {
+  $ids=array_keys($posts);
+  foreach($ids as $id) { update_post_meta($id,'_ks_sync_error',$message); }
+  $out['failed']+=count($ids); $out['errors'][]='Posts '.min($ids).'-'.max($ids).': '.$message;
+  return $out;
  }
  public static function api_suggest($request) {
   $id=absint($request['post_id']); $post=get_post($id);

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KnowledgeSpark
  * Description: Reader-focused internal link suggestions powered by Qdrant Cloud and optional AI ranking.
- * Version: 0.0.2
+ * Version: 0.0.3
  * Requires at least: 6.4
  * Requires PHP: 7.4
  * Author: KnowledgeSpark

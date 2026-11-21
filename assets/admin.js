@@ -589,18 +589,13 @@
         output.setAttribute('aria-live', 'polite');
         var buttons = [test, index, reset];
         buttons.forEach(function (button) { button.type = 'button'; });
-        var cancel = element('button', 'button button-secondary ks-cancel', 'Stop after current batch');
-        cancel.type = 'button';
-        cancel.hidden = true;
-        root.appendChild(cancel);
+        var stop = element('button', 'button button-secondary ks-cancel', 'Stop indexing');
+        stop.type = 'button';
+        stop.hidden = true;
+        root.appendChild(stop);
         var busy = false;
-        var cancelled = false;
-        var indexing = false;
-        function warnBeforeLeaving(event) {
-            if (!indexing) return;
-            event.preventDefault();
-            event.returnValue = '';
-        }
+        var jobRunning = false;
+        var pollTimer = null;
         var states = [];
         function lock() {
             busy = true;
@@ -609,18 +604,59 @@
         }
         function unlock() {
             buttons.forEach(function (button, i) { button.disabled = states[i]; });
+            if (jobRunning) index.disabled = true;
             busy = false;
-            indexing = false;
-            window.removeEventListener('beforeunload', warnBeforeLeaving);
-            cancel.hidden = true;
-            cancel.disabled = false;
         }
-        cancel.addEventListener('click', function () {
-            if (!busy) return;
-            cancelled = true;
-            cancel.disabled = true;
-            status(output, 'Stopping after the current batch finishes. Completed work will be kept.');
-        });
+        function reflect(job) {
+            jobRunning = !!(job && typeof job === 'object' && job.status === 'running');
+            index.disabled = jobRunning;
+            stop.hidden = !jobRunning;
+            stop.disabled = false;
+        }
+        function render(job) {
+            if (!job || typeof job !== 'object' || Array.isArray(job)) return;
+            var running = job.status === 'running';
+            var indexed = Number.isInteger(job.indexed) ? job.indexed : 0;
+            var skipped = Number.isInteger(job.skipped) ? job.skipped : 0;
+            var failed = Number.isInteger(job.failed) ? job.failed : 0;
+            var totals = indexed + ' newly indexed, ' + skipped + ' already indexed (skipped), ' + failed + ' failed.';
+            var advice = failed ? ' Review the errors and try indexing again after fixing the cause.' : '';
+            reflect(job);
+            if (running) {
+                status(output, 'Indexing runs on the server — you can close this page. ' + totals);
+            } else if (job.status === 'done') {
+                status(output, 'Indexing complete. ' + totals + advice, failed ? 'error' : 'success');
+            } else if (job.status === 'stopped') {
+                status(output, 'Indexing stopped. Completed work is kept. ' + totals + advice, failed ? 'error' : 'success');
+            } else {
+                return;
+            }
+            if (Array.isArray(job.errors) && job.errors.length) {
+                var list = element('ul', 'ks-index-errors');
+                job.errors.forEach(function (message) {
+                    if (typeof message === 'string') list.appendChild(element('li', '', message));
+                });
+                output.appendChild(list);
+                if (failed > job.errors.length) output.appendChild(element('p', 'ks-help', 'Showing the first ' + job.errors.length + ' error details. Check your settings before indexing again.'));
+            }
+        }
+        function poll() {
+            if (pollTimer) return;
+            pollTimer = window.setTimeout(async function () {
+                pollTimer = null;
+                var data;
+                try {
+                    data = await request('status');
+                    render(data);
+                } catch (error) {
+                    status(output, 'Indexing continues on the server; this page could not refresh its progress. ' + error.message, 'error');
+                }
+                if (!data || typeof data !== 'object' || data.status === 'running') poll();
+            }, 3000);
+        }
+        function stopPolling() {
+            if (pollTimer) { window.clearTimeout(pollTimer); pollTimer = null; }
+        }
         test.addEventListener('click', async function () {
             if (busy) return;
             lock();
@@ -640,6 +676,8 @@
             try {
                 var data = await request('reset');
                 status(output, text(data.message) || 'Collection cleared. Index your posts to enable suggestions again.', 'success');
+                stopPolling();
+                reflect({ status: 'stopped' });
             } catch (error) {
                 status(output, error.message, 'error');
             } finally { unlock(); }
@@ -647,52 +685,37 @@
         index.addEventListener('click', async function () {
             if (busy) return;
             lock();
-            cancelled = false;
-            indexing = true;
-            window.addEventListener('beforeunload', warnBeforeLeaving);
-            cancel.hidden = false;
-            var cursor = 0;
-            var indexed = 0;
-            var failed = 0;
-            var skipped = 0;
-            var errors = [];
-            var done = false;
-            function totals() { return indexed + ' newly indexed, ' + skipped + ' already indexed (skipped), ' + failed + ' failed.'; }
-            function showErrors() {
-                if (!errors.length) return;
-                var list = element('ul', 'ks-index-errors');
-                errors.forEach(function (message) { list.appendChild(element('li', '', message)); });
-                output.appendChild(list);
-                if (failed > errors.length) output.appendChild(element('p', 'ks-help', 'Showing up to 20 error details. Check your settings before indexing again.'));
-            }
-            status(output, 'Keep this page open — indexing published posts… ' + totals());
+            status(output, 'Starting background indexing…');
             try {
-                while (!done && !cancelled) {
-                    var data = await request('index', { cursor: cursor });
-                    if (typeof data.done !== 'boolean' || !Number.isInteger(data.indexed) || data.indexed < 0 || !Number.isInteger(data.failed) || data.failed < 0) {
-                        throw new Error('The server returned invalid batch progress. Indexing stopped; check the plugin settings before retrying.');
-                    }
-                    skipped += Number.isInteger(data.skipped) ? data.skipped : 0;
-                    indexed += data.indexed;
-                    failed += data.failed;
-                    if (Array.isArray(data.errors)) data.errors.forEach(function (error) {
-                        var message = typeof error === 'string' ? error : text(error && error.message);
-                        if (message && errors.length < 20) errors.push(message);
-                    });
-                    done = data.done;
-                    if (!done && (!Number.isInteger(data.cursor) || data.cursor <= cursor)) {
-                        throw new Error('The index cursor did not advance. Indexing stopped to avoid repeating a batch.');
-                    }
-                    cursor = data.cursor;
-                    status(output, 'Keep this page open — indexing published posts… ' + totals() + (text(data.message) ? ' ' + data.message : ''));
-                }
-                status(output, (done ? 'Indexing complete. ' : 'Indexing stopped after the current batch. ') + totals() + (failed ? ' Review the errors and try indexing again after fixing the cause.' : ''), failed ? 'error' : 'success');
-                showErrors();
+                var data = await request('index', {});
+                render(data);
+                if (data && data.status === 'running') poll();
             } catch (error) {
-                status(output, 'Indexing stopped. ' + totals() + ' ' + (error.message || 'Please try again.') + ' Counts include confirmed batches only.', 'error');
-                showErrors();
+                status(output, error.message, 'error');
             } finally { unlock(); }
         });
+        stop.addEventListener('click', async function () {
+            if (busy) return;
+            lock();
+            status(output, 'Stopping indexing…');
+            try {
+                var data = await request('stop');
+                render(data);
+            } catch (error) {
+                status(output, error.message, 'error');
+            } finally {
+                stopPolling();
+                unlock();
+            }
+        });
+        (async function resumeOnLoad() {
+            try {
+                var data = await request('status');
+                if (!data || typeof data !== 'object') return;
+                render(data);
+                if (data.status === 'running') poll();
+            } catch (error) { /* the progress display is best-effort; the job runs regardless */ }
+        })();
     }
 
     function init() {

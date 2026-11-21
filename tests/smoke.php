@@ -4,10 +4,11 @@ define('ABSPATH', __DIR__);
 class WP_Error { private $code; private $message; private $data; public function __construct($code,$message,$data=null){$this->code=$code;$this->message=$message;$this->data=$data;} public function get_error_code(){return $this->code;} public function get_error_message(){return $this->message;} public function get_error_data(){return $this->data;} }
 function is_wp_error($v){return $v instanceof WP_Error;}
 function wp_parse_args($a,$b){return array_merge($b,$a);}
-function get_option($k,$d=[]){return $GLOBALS['settings'] ?? [];}
+function get_option($k,$d=[]){if($k==='knowledgespark_index_job'){return $GLOBALS['options'][$k] ?? $d;}return $GLOBALS['settings'] ?? [];}
 function home_url($p=''){return 'https://example.com'.$p;}
 function get_post($id){return $GLOBALS['posts'][$id] ?? null;}
 function is_post_publicly_viewable($p){return $p->post_status==='publish';}
+function get_post_type($id){$p=get_post($id);return $p?$p->post_type:false;}
 function wp_strip_all_tags($s){return strip_tags($s);}
 function strip_shortcodes($s){return $s;}
 function absint($v){return abs((int)$v);}
@@ -18,8 +19,13 @@ function wp_json_encode($v){return json_encode($v);}
 function sanitize_text_field($s){return trim(strip_tags($s));}
 function wp_remote_retrieve_response_code($r){return $r['status'];}
 function wp_remote_retrieve_body($r){return $r['body'];}
-function delete_post_meta($id,$key){}
-function update_post_meta($id,$key,$value){}
+function delete_post_meta($id,$key){if(isset($GLOBALS['ks_meta'][$id][$key])){unset($GLOBALS['ks_meta'][$id][$key]);}}
+function update_post_meta($id,$key,$value){$GLOBALS['ks_meta'][$id][$key]=$value;}
+function update_option($k,$v,$autoload=null){$GLOBALS['options'][$k]=$v;return true;}
+function wp_schedule_single_event($ts,$hook,$args=[]){$GLOBALS['ks_cron'][$hook]=$ts;return true;}
+function wp_next_scheduled($hook,$args=[]){return isset($GLOBALS['ks_cron'][$hook])?$GLOBALS['ks_cron'][$hook]:false;}
+function wp_clear_scheduled_hook($hook,$args=[]){unset($GLOBALS['ks_cron'][$hook]);}
+function spawn_cron(){$GLOBALS['ks_spawns']=isset($GLOBALS['ks_spawns'])?$GLOBALS['ks_spawns']+1:1;}
 function wp_safe_remote_request($url,$args){
  if(isset($GLOBALS['flaky']) && $GLOBALS['flaky']>=0 && strpos($url,'chat/completions')===false){
   $GLOBALS['flaky']--;
@@ -34,6 +40,25 @@ function wp_safe_remote_request($url,$args){
    return ['status'=>200,'body'=>'{"result":{}}'];
   }
   return ['status'=>200,'body'=>json_encode(['result'=>isset($GLOBALS['remote_payload'])?[['payload'=>$GLOBALS['remote_payload']]]:[]])];
+ }
+ if(isset($GLOBALS['ks_batch'])) {
+  $GLOBALS['ks_calls'][]=$args['method'];
+  $body=$args['body']===null?null:json_decode($args['body'],true);
+  if($args['method']==='GET') { return ['status'=>200,'body'=>json_encode(['result'=>['status'=>'green','config'=>['params'=>['vectors'=>['size'=>384,'distance'=>'Cosine']]]]])]; }
+  if($args['method']==='DELETE') { $GLOBALS['ks_reset']=true; return ['status'=>200,'body'=>'{"result":true}']; }
+  if($args['method']==='POST' && isset($body['ids'])) {
+   if(!empty($GLOBALS['ks_delete_during_get']) && isset($GLOBALS['posts'][$GLOBALS['ks_delete_during_get']])) { $GLOBALS['posts'][$GLOBALS['ks_delete_during_get']]->post_status='draft'; $GLOBALS['ks_delete_during_get']=0; }
+   if(!empty($GLOBALS['ks_fail_get'])) { return new WP_Error('http_request_failed','Retrieve failed'); }
+   $GLOBALS['ks_get_ids']=$body['ids'];
+   $out=[]; foreach($body['ids'] as $pid){ if(isset($GLOBALS['ks_stored'][$pid])) { $out[]=['id'=>(int)$pid,'payload'=>$GLOBALS['ks_stored'][$pid]]; } }
+   return ['status'=>200,'body'=>json_encode(['result'=>$out])];
+  }
+  if($args['method']==='POST') { if(isset($body['points'])) { $GLOBALS['ks_point_deletes']=array_merge((array)($GLOBALS['ks_point_deletes'] ?? []),$body['points']); } return ['status'=>200,'body'=>'{"result":{}}']; }
+  if($args['method']==='PUT') {
+   if(!empty($GLOBALS['ks_fail_put'])) { return new WP_Error('http_request_failed','Write failed'); }
+   $GLOBALS['ks_put_ids']=array_column($body['points'] ?? [],'id');
+   return ['status'=>200,'body'=>'{"result":{}}'];
+  }
  }
 if(strpos($url,'chat/completions')!==false){ if(isset($GLOBALS['ks_chat_body'])){ return ['status'=>200,'body'=>$GLOBALS['ks_chat_body']]; } if(!empty($GLOBALS['ks_format_fail'])) { $GLOBALS['ks_format_fail']--; return ['status'=>200,'body'=>"{\"choices\":[{\"finish_reason\":\"length\",\"message\":{\"content\":\"{\\\"suggestions\\\":[{\\\"post_id\\\":2,\\\"reason\\\":\\\"truncat\"}}]}"]; } return ['status'=>200,'body'=>"{\"choices\":[{\"message\":{\"content\":\"{\\\"suggestions\\\":[{\\\"post_id\\\":2,\\\"reason\\\":\\\"Helps explain setup\\\",\\\"anchor\\\":\\\"invented phrase\\\",\\\"quote\\\":\\\"invented sentence\\\"},{\\\"post_id\\\":999,\\\"reason\\\":\\\"invented target\\\"}]}\"}}]}"]; }
  if(isset($GLOBALS['ks_points_ids'])){ $pts=[]; foreach($GLOBALS['ks_points_ids'] as $i=>$pid){ $pts[]=['id'=>(int)$pid,'score'=>1-$i*0.1]; } return ['status'=>200,'body'=>json_encode(['result'=>[['points'=>$pts]]])]; }
@@ -286,3 +311,111 @@ check(KnowledgeSpark::app_passwords_available(false)===true,'The opt-in enables 
 ob_start(); KnowledgeSpark::page(); $page=ob_get_clean();
 check(strpos($page,' checked>')!==false,'The checkbox reflects the enabled opt-in');
 $GLOBALS['settings']['agent_access']=false;
+// 0.0.3 background-batch-indexing: batch embedding (100 posts per request pair).
+function ks_fp($id){ $s=KnowledgeSpark::settings(); $p=$GLOBALS['posts'][$id]; return hash('sha256',wp_json_encode([KnowledgeSpark::profile($p),$s['embedding'],$s['dimensions'],get_permalink($id),$p->post_modified_gmt])); }
+function ks_batch_mode($ids){
+ foreach(array_keys($GLOBALS['posts']) as $pid){ if((int)$pid>9) { unset($GLOBALS['posts'][$pid]); } }
+ foreach($ids as $pid){ $GLOBALS['posts'][(int)$pid]=(object)['post_type'=>'post','post_status'=>'publish','post_password'=>'','post_title'=>'Post '.$pid,'post_content'=>'Long enough useful body text about terrarium care and setup steps.','post_excerpt'=>'','post_modified_gmt'=>'2026-11-21 10:00:00']; }
+ $GLOBALS['ks_batch']=true; $GLOBALS['ks_calls']=[]; $GLOBALS['ks_stored']=[]; $GLOBALS['ks_get_ids']=null; $GLOBALS['ks_put_ids']=null; $GLOBALS['ks_fail_get']=false; $GLOBALS['ks_fail_put']=false; $GLOBALS['ks_delete_during_get']=false; $GLOBALS['ks_point_deletes']=[]; $GLOBALS['ks_meta']=[]; $GLOBALS['ks_reset']=false;
+}
+function ks_run_job($cursor=0){ $GLOBALS['options']=['knowledgespark_index_job'=>['status'=>'running','cursor'=>$cursor,'indexed'=>0,'skipped'=>0,'failed'=>0,'errors'=>[],'started'=>1,'updated'=>1]]; $GLOBALS['ks_cron']=[]; KnowledgeSpark::index_batch(); return $GLOBALS['options']['knowledgespark_index_job']; }
+$ks_low=[]; foreach([1,2,3,6] as $pid){ if(isset($GLOBALS['posts'][$pid])) { $ks_low[$pid]=$GLOBALS['posts'][$pid]; unset($GLOBALS['posts'][$pid]); } }
+ks_batch_mode(range(1001,1100));
+$job=ks_run_job(0);
+check($job['status']==='done' && $job['indexed']===100,'Index a full batch of 100 posts in one run');
+check(count($GLOBALS['ks_calls'])===2 && count($GLOBALS['ks_get_ids'])===100,'A 100-post batch costs one retrieve and one upsert');
+check(count($GLOBALS['ks_put_ids'])===100,'The upsert carries all 100 points with inference objects');
+check($job['cursor']===1100 && !isset($GLOBALS['ks_cron']['knowledgespark_index_batch']),'The batch cursor advances and a completed run clears its schedule');
+ks_batch_mode([11,12]);
+$GLOBALS['ks_stored']=[11=>['fingerprint'=>ks_fp(11)]];
+$job=ks_run_job(6);
+check($job['skipped']===1 && $job['indexed']===1,'Batch skips current fingerprints and embeds only stale points');
+check($GLOBALS['ks_put_ids']===[12],'Only the stale point joins the upsert');
+ks_batch_mode([11,12]);
+$GLOBALS['ks_stored']=[11=>['fingerprint'=>ks_fp(11)],12=>['fingerprint'=>ks_fp(12)]];
+$job=ks_run_job(6);
+check($job['skipped']===2 && $job['indexed']===0,'A fully current batch re-embeds nothing');
+check(count($GLOBALS['ks_calls'])===1,'A fully current batch only reads the payloads');
+ks_batch_mode([11]);
+$GLOBALS['ks_stored']=[11=>['modified'=>'2026-11-21 10:00:00','url'=>get_permalink(11)]];
+$job=ks_run_job(6);
+check($job['skipped']===1 && count($GLOBALS['ks_calls'])===1,'Legacy points without fingerprints are preserved');
+ks_batch_mode([11,12,13]);
+$GLOBALS['ks_delete_during_get']=12;
+$job=ks_run_job(6);
+check($job['indexed']===2 && $job['failed']===0,'A post deleted mid-batch is not counted');
+check($GLOBALS['ks_put_ids']===[11,13],'A post deleted mid-batch never joins the upsert');
+check(in_array(12,$GLOBALS['ks_point_deletes'],false),'Its point is removed from the collection');
+ks_batch_mode([11,12]);
+$GLOBALS['ks_fail_get']=true;
+$job=ks_run_job(6);
+check($job['failed']===2 && $job['indexed']===0,'Retrieve failure fails the batch honestly');
+check(count($job['errors'])===1 && strpos($job['errors'][0],'Posts 11-12:')===0,'The failure names the batch ID range');
+check(isset($GLOBALS['ks_meta'][11]['_ks_sync_error']) && isset($GLOBALS['ks_meta'][12]['_ks_sync_error']),'Failed posts carry the sync error meta');
+check($job['cursor']===12,'A failed batch still advances the cursor');
+ks_batch_mode([11,12]);
+$GLOBALS['ks_stored']=[11=>['fingerprint'=>ks_fp(11)]];
+$GLOBALS['ks_fail_put']=true;
+$job=ks_run_job(6);
+check($job['skipped']===1 && $job['failed']===1,'Upsert failure fails only the attempted points');
+check(strpos($job['errors'][0],'Posts 12-12:')===0,'The upsert failure names only the attempted points');
+check(!isset($GLOBALS['ks_meta'][11]['_ks_sync_error']) && isset($GLOBALS['ks_meta'][12]['_ks_sync_error']),'Meta is cleared for skipped posts and set for failed ones');
+foreach([1,2,3,6] as $pid){ if(isset($GLOBALS['posts'][$pid])) { $ks_low[$pid]=$GLOBALS['posts'][$pid]; unset($GLOBALS['posts'][$pid]); } }
+ks_batch_mode(range(1001,1250));
+$job=ks_run_job(0);
+check($job['status']==='done' && $job['indexed']===250,'One cron run loops batches within its time budget');
+check(count($GLOBALS['ks_calls'])===6,'250 posts cost six Qdrant requests in total');
+ks_batch_mode(range(1001,1250));
+$GLOBALS['ks_fail_put']=true;
+$job=ks_run_job(0);
+check($job['status']==='done' && $job['failed']===250 && $job['indexed']===0,'Failed batches are recorded without stalling the run');
+check(count($job['errors'])===3,'Each failed batch contributes one error entry');
+foreach($ks_low as $pid=>$p){ $GLOBALS['posts'][$pid]=$p; }
+ks_batch_mode([11]);
+$GLOBALS['flaky']=1; $GLOBALS['ks_backoff_scale']=0;
+$job=ks_run_job(6);
+unset($GLOBALS['flaky'],$GLOBALS['ks_backoff_scale']);
+check($job['indexed']===1 && $job['failed']===0,'Transient Qdrant TLS errors are retried and the batch succeeds');
+check(count($GLOBALS['ks_calls'])===2,'The retry recovers with no duplicate batch work');
+ks_batch_mode([11]);
+$GLOBALS['flaky']=9; $GLOBALS['ks_backoff_scale']=0;
+$job=ks_run_job(6);
+unset($GLOBALS['flaky'],$GLOBALS['ks_backoff_scale']);
+check($job['failed']===1 && strpos($job['errors'][0],'mismatched TLS certificate')!==false,'Persistent TLS failures surface the retry-later guidance');
+// 0.0.3 background-batch-indexing: background job lifecycle.
+$GLOBALS['options']=[]; $GLOBALS['ks_cron']=[]; $GLOBALS['ks_spawns']=0; $GLOBALS['ks_calls']=[];
+$job=KnowledgeSpark::api_index();
+check($job['status']==='running','Start returns the running job immediately');
+check($GLOBALS['options']['knowledgespark_index_job']['status']==='running' && $GLOBALS['options']['knowledgespark_index_job']['indexed']===0,'Start persists a fresh job state');
+check(isset($GLOBALS['ks_cron']['knowledgespark_index_batch']),'Start schedules the batch event');
+check($GLOBALS['ks_spawns']===1,'Start kicks the cron loop');
+check(count($GLOBALS['ks_calls'])===1 && $GLOBALS['ks_calls'][0]==='GET','Start only validates the collection without embedding inline');
+$started=$job['started'];
+$job=KnowledgeSpark::api_index();
+check($job['started']===$started && count($GLOBALS['ks_calls'])===1,'Starting while running does not start a second job');
+$GLOBALS['options']['knowledgespark_index_job']=['status'=>'done','cursor'=>999,'indexed'=>500,'skipped'=>41,'failed'=>0,'errors'=>[],'started'=>1,'updated'=>1];
+$GLOBALS['ks_cron']=[]; $GLOBALS['ks_spawns']=0; $GLOBALS['ks_calls']=[];
+$job=KnowledgeSpark::api_index();
+check($job['status']==='running' && $job['indexed']===0 && $job['cursor']===0,'Starting after completion begins a fresh pass');
+check($GLOBALS['ks_spawns']===1,'The fresh pass schedules a new batch event');
+$GLOBALS['options']=[];
+$job=KnowledgeSpark::api_status();
+check($job===['status'=>'idle','cursor'=>0,'indexed'=>0,'skipped'=>0,'failed'=>0,'errors'=>[]],'Status reports idle before any run');
+$GLOBALS['options']=['knowledgespark_index_job'=>['status'=>'running','cursor'=>12,'indexed'=>2,'skipped'=>1,'failed'=>0,'errors'=>[],'started'=>1,'updated'=>1]];
+$GLOBALS['ks_cron']=['knowledgespark_index_batch'=>12345]; $GLOBALS['ks_calls']=[];
+$job=KnowledgeSpark::api_status();
+check($job['status']==='running' && $job['cursor']===12 && count($GLOBALS['ks_calls'])===0,'Status exposes the persisted state without Qdrant calls');
+$job=KnowledgeSpark::api_stop();
+check($job['status']==='stopped' && !isset($GLOBALS['ks_cron']['knowledgespark_index_batch']),'Stop halts the job and clears the schedule');
+KnowledgeSpark::index_batch();
+check($GLOBALS['options']['knowledgespark_index_job']['status']==='stopped' && count($GLOBALS['ks_calls'])===0 && !isset($GLOBALS['ks_cron']['knowledgespark_index_batch']),'The runner honors a stopped job');
+$GLOBALS['options']=['knowledgespark_index_job'=>['status'=>'running','cursor'=>12,'indexed'=>2,'skipped'=>1,'failed'=>0,'errors'=>[],'started'=>1,'updated'=>1]];
+$GLOBALS['ks_cron']=['knowledgespark_index_batch'=>999]; $GLOBALS['ks_calls']=[];
+$r=KnowledgeSpark::api_reset();
+check(!is_wp_error($r) && $GLOBALS['options']['knowledgespark_index_job']['status']==='stopped' && !isset($GLOBALS['ks_cron']['knowledgespark_index_batch']),'Reset stops a running job before deleting the collection');
+check($GLOBALS['ks_reset']===true && count($GLOBALS['ks_calls'])===1,'Reset deletes the collection');
+unset($GLOBALS['ks_batch']);
+// 0.0.3 background-batch-indexing: settings page copy.
+ob_start(); KnowledgeSpark::page(); $page=ob_get_clean();
+check(strpos($page,'Indexing runs on the server')!==false,'Settings page describes background indexing');
+check(strpos($page,'Keep this page open')===false,'The keep-page-open warning is removed');

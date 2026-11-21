@@ -3,7 +3,7 @@ Contributors: knowledgespark
 Tags: internal links, editorial, qdrant, ai
 Requires at least: 6.4
 Requires PHP: 7.4
-Stable tag: 0.0.2
+Stable tag: 0.0.3
 License: GPLv2 or later
 
 Reader-focused internal link suggestions in the WordPress post editor. The same suggest and apply-all actions are also registered as WordPress abilities, so AI agents can interlink posts through WordPress MCP plugins such as MCP Adapter.
@@ -19,7 +19,7 @@ Version 0.0.1 supports public published posts as link targets, Gutenberg and the
 3. Enter your Qdrant Cloud HTTPS cluster URL and API key. Use a dedicated collection for this site; do not reuse an unrelated collection.
 4. Enable Cloud Inference in the cluster console. Verify the selected model is available and labelled free. The default sentence-transformers/all-MiniLM-L6-v2 model requires 384 dimensions.
 5. Optionally configure an OpenAI-compatible API base URL, API key, and model supporting chat completions with JSON object responses. AI costs are separate from Qdrant's free tier. Without AI, semantic matches remain available.
-6. Save settings, test the connection, and index published posts. Keep this page open until indexing finishes. Errors are shown; rerun indexing to retry.
+6. Save settings, test the connection, and index published posts. Indexing runs on the server in batches of 100 posts, so you can close the page; reopen it later to watch progress or stop the run. Errors are shown; rerun indexing to retry, since unchanged posts are skipped.
 7. Edit a post, set the maximum recommendation count, and click KnowledgeSpark. Review the proposed destination, reason, and placement, then click Apply All Links to insert, save, and reload, or add links yourself with the normal editor link tool.
 
 The server needs outbound HTTPS access to the configured services. API credentials are stored in the WordPress options database and are never sent to the browser. Protect database backups accordingly. Only administrators can configure or index; suggestions require permission to edit the source post.
@@ -60,7 +60,7 @@ This is an early MVP. Retrieval uses one compact vector per post and heading que
 
 Only the post post-type is supported. Noindex metadata from third-party SEO plugins is not inspected. Existing links are detected via WordPress URL resolution; custom redirect aliases may not resolve. Deleted, unpublished, and password-protected targets are also checked against WordPress at recommendation time, even if the cloud index is stale.
 
-WP-Cron depends on site traffic. Use a real cron runner for reliable synchronization. Indexing checks the configured collection and skips unchanged, already embedded posts. Missing or changed posts are embedded; normal saves synchronize only the saved post. Progress shows indexed, skipped, and failed counts. Keep the settings page open while indexing; supported browsers warn before leaving during a run. Restarting safely checks completed work without embedding it again. The settings page shows batch failures. Individual cron failures are stored under the post's _ks_sync_error metadata. Deleting the plugin does not delete your cloud collection or settings. Reset collection deletes the configured collection and must be confirmed. Qdrant requests retry automatically twice (with backoff) on transient TLS or network errors; AI responses that come back unparseable (typically token truncation from the model's internal reasoning) are retried once, and failures report finish reason and token counts for diagnosis.
+WP-Cron drives the background indexing job and per-post save synchronization. Each indexing run embeds posts in batches of 100 — one payload read plus one Qdrant Cloud Inference upsert per batch, about two requests per 100 posts instead of two per post — and stores its progress (cursor, counts, recent errors) in the database, so closing the settings page never stops it. Reopening the page shows live progress and a Stop control; starting indexing again after completion or a stop re-verifies everything and skips unchanged posts. Batches that keep failing after the automatic retries are recorded with their post-ID range and cause while the run continues; rerun indexing to retry them, and failed posts also store the error under the post's _ks_sync_error metadata. On quiet sites the run can pause between batches until the next request: WordPress triggers its cron from ordinary page requests (including this page's progress polling), and a system cron entry (for example `wget -q -O - https://example.com/wp-cron.php` every minute) keeps long runs moving regardless. Deleting the plugin does not delete your cloud collection or settings. Reset collection stops a running job and deletes the configured collection; it must be confirmed. Qdrant requests retry automatically twice (with backoff) on transient TLS or network errors; AI responses that come back unparseable (typically token truncation from the model's internal reasoning) are retried once, and failures report finish reason and token counts for diagnosis.
 
 Changing embedding models requires a new collection and full indexing, even if dimensions match. Free-tier quotas and free model availability must be verified in Qdrant's console. Test connection validates cluster/collection access; indexing verifies inference access. No live external account was configured during development.
 
@@ -68,6 +68,9 @@ Changing embedding models requires a new collection and full indexing, even if d
 Read KNOWN-ISSUES.md before changing the engine — it records the critical invariants (AI timeout and token budget, Qdrant transient-failure retry, the PHP/JavaScript span-matcher mirror, Apply-All-Links safety guards) and the tests that enforce them. Run php tests/smoke.php for standalone mocked regression checks. Run php -l on PHP files and node --check assets/admin.js for syntax validation. Live WordPress editor and external service integration still require credentials and a running site.
 
 == Changelog ==
+= 0.0.3 =
+* Background batch indexing: posts are embedded into Qdrant in batches of 100 (one payload read plus one server-side inference upsert per batch — about two requests per 100 posts instead of two per post), as a resumable background job driven by WP-Cron. The settings page starts the job and shows live progress; you can close it at any time, stop the run, and rerun to retry failures while unchanged posts are skipped. New status and stop REST routes; a job-state option records the cursor, counts, and recent errors, and a failed batch records its post-ID range while the run continues. Reset now stops a running job before deleting the collection. No change to suggestions, the placement guards, or per-post save synchronization.
+
 = 0.0.2 =
 * Agent tools: find suggestions, apply all links, interlink, and list posts are registered as WordPress abilities and exposed to AI agents through WordPress MCP plugins such as MCP Adapter (Application Password authentication; explicit opt-in setting for plain-HTTP development sites). No change to the editor flow, the suggestion engine, or the placement guards.
 
