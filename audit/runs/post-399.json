@@ -1,0 +1,46 @@
+{
+    "mode": "ai-failed-fallback",
+    "message": "AI ranking unavailable; showing semantic matches. cURL error 28: Operation timed out after 45006 milliseconds with 0 bytes received",
+    "suggestions": [
+        {
+            "post_id": 441,
+            "title": "Why Never Opening a 'Long-Lived' Terrarium Jar Eventually Kills It",
+            "url": "http://dev-site.local/?p=441",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 542,
+            "title": "Terrarium 'Sealed Forever = Healthy Forever' Lie: What the Internet Gets Wrong",
+            "url": "http://dev-site.local/?p=542",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 351,
+            "title": "Will a Kids\u2019 Terrarium Kit Terrarium Jar Last Into Year 2?",
+            "url": "http://dev-site.local/?p=351",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 449,
+            "title": "The 12-Year Terrarium: Exception or Expectation? Honest Timeline",
+            "url": "http://dev-site.local/?p=449",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 444,
+            "title": "Is the 12-Year Sealed Terrarium Jar Story Real? What 'Indefinitely' Actually Requires",
+            "url": "http://dev-site.local/?p=444",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        }
+    ]
+}

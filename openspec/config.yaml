@@ -1,0 +1,45 @@
+schema: spec-driven
+
+# Project context — constraints that should guide OpenSpec artifacts and workflows.
+context: |
+  KnowledgeSpark is a WordPress plugin (requires WordPress 6.4+, PHP 7.4+) providing
+  reader-focused internal link suggestions from a dedicated Qdrant Cloud collection,
+  with optional OpenAI-compatible chat-model ranking.
+  - No build step: plain PHP in includes/, vanilla JavaScript in assets/admin.js,
+    plain CSS in assets/admin.css. Do not introduce bundlers, npm dependencies,
+    or minified assets.
+  - The live site runs on DevKinsta; live WordPress inspection and site file
+    operations go through the Novamira CLI, never direct database edits.
+  - Development has no live Qdrant or AI credentials: tests must be fully mocked
+    and runnable offline; never require external service credentials to run tests.
+  - External services: Qdrant Cloud Inference (all-MiniLM-L6-v2, 384 dimensions,
+    one dedicated collection per site) and an optional OpenAI-compatible chat API.
+  - Engine invariants (AI timeout and token budget, Qdrant transient-failure retry,
+    the PHP/JavaScript span-matcher mirror, Apply-All-Links safety guards) are
+    recorded in KNOWN-ISSUES.md and enforced by tests/smoke.php.
+  - License GPL-2.0-or-later; text domain knowledgespark.
+
+# Per-artifact rules
+rules:
+  proposal:
+    - State explicitly what is out of scope
+  tasks:
+    - Any task list touching PHP or JavaScript must end with the project checks
+      (php -l on every changed PHP file, node --check assets/admin.js when JS
+      changed, and php tests/smoke.php)
+  design:
+    - When the suggestion engine is touched, read KNOWN-ISSUES.md first and state
+      how the design preserves its recorded invariants
+
+# Per-operation guidance
+operations:
+  apply:
+    guidance:
+      - Do not modify or delete artifacts under audit/ (probe scripts, runs,
+        findings) while implementing a change
+      - Keep KNOWN-ISSUES.md invariants intact; update it when an invariant
+        legitimately changes
+  archive:
+    guidance:
+      - Before archiving, confirm readme.txt (changelog, limitations) and
+        KNOWN-ISSUES.md reflect the change

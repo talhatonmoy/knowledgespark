@@ -1,0 +1,46 @@
+{
+    "mode": "ai",
+    "message": "AI-reviewed suggestions. Verify the target and placement before linking.",
+    "suggestions": [
+        {
+            "post_id": 391,
+            "title": "Gnats Every Time You Open the Lid? Emergency Trap Inside the Terrarium Jar",
+            "url": "http://dev-site.local/?p=391",
+            "reason": "The quarantine step tells readers to place a sticky trap at the jar opening but gives no build or placement detail; this guide shows exactly how to trap adults inside a jar without disturbing the enclosure.",
+            "anchor": "Place one yellow sticky trap just above the soil",
+            "quote": "Place one yellow sticky trap just above the soil. Cut it small to fit inside the jar or place it next to the lid opening."
+        },
+        {
+            "post_id": 167,
+            "title": "Gnat Infestation in a Closed Jar? Why Sticky Traps Fail and",
+            "url": "http://dev-site.local/?p=167",
+            "reason": "The article warns that traps alone never solve the problem; this piece explains the mechanics of why sticky traps fail in sealed jars (wrong color, bait mismatch, hidden larvae), helping readers avoid wasting weeks on trapping only.",
+            "anchor": "Traps alone never solve it",
+            "quote": "And do not just trap adults. Traps alone never solve it."
+        },
+        {
+            "post_id": 501,
+            "title": "Best Gnat Traps & Sterilized Soil for Terrarium Jar Terrariums: What to Buy",
+            "url": "http://dev-site.local/?p=501",
+            "reason": "Readers ready to run the BTI-plus-traps plan need to know which products to buy; this buying guide covers trap options, BTI granules, and sterilized soil choices for jar setups.",
+            "anchor": "Soak Mosquito Bits in water per label",
+            "quote": "Soak Mosquito Bits in water per label, then water lightly with that tea so it reaches the top 1 to 2 inches."
+        },
+        {
+            "post_id": 170,
+            "title": "Terrarium Gnats? How Eggs in Your Soil Became a Pest",
+            "url": "http://dev-site.local/?p=170",
+            "reason": "Supports the article's prevention advice by explaining that most infestations begin with gnat eggs already present in bagged soil and substrate, so readers understand why quarantining new materials matters.",
+            "anchor": "New substrate or foraged moss can re seed gnats if not checked and lightly dried first",
+            "quote": "New substrate or foraged moss can re seed gnats if not checked and lightly dried first."
+        },
+        {
+            "post_id": 282,
+            "title": "Foggy Terrarium Terrarium Jar? How to Reduce Condensation Without Drying It Out",
+            "url": "http://dev-site.local/?p=282",
+            "reason": "Constant fog is the moisture condition that keeps topsoil gnat-friendly; this guide shows how to rebalance condensation in a sealed jar without desiccating the plants, addressing the root cause behind the outbreak.",
+            "anchor": "If you see persistent fog on the glass all day, you are still too wet",
+            "quote": "If you see persistent fog on the glass all day, you are still too wet."
+        }
+    ]
+}

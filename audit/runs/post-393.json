@@ -1,0 +1,46 @@
+{
+    "mode": "ai-failed-fallback",
+    "message": "AI ranking unavailable; showing semantic matches. cURL error 28: Operation timed out after 45003 milliseconds with 0 bytes received",
+    "suggestions": [
+        {
+            "post_id": 501,
+            "title": "Best Gnat Traps & Sterilized Soil for Terrarium Jar Terrariums: What to Buy",
+            "url": "http://dev-site.local/?p=501",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 425,
+            "title": "Where to Buy Gnat-Free Soil & Charcoal for Terrarium Jars",
+            "url": "http://dev-site.local/?p=425",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 391,
+            "title": "Gnats Every Time You Open the Lid? Emergency Trap Inside the Terrarium Jar",
+            "url": "http://dev-site.local/?p=391",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 170,
+            "title": "Terrarium Gnats? How Eggs in Your Soil Became a Pest",
+            "url": "http://dev-site.local/?p=170",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 394,
+            "title": "Fungus Gnat Infestation: Step-by-Step Elimination for Terrarium Jar Terrariums",
+            "url": "http://dev-site.local/?p=394",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        }
+    ]
+}

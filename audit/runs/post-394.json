@@ -1,0 +1,46 @@
+{
+    "mode": "ai-failed-fallback",
+    "message": "AI ranking unavailable; showing semantic matches. cURL error 28: Operation timed out after 45000 milliseconds with 0 bytes received",
+    "suggestions": [
+        {
+            "post_id": 166,
+            "title": "Get Rid of Fungus Gnats in Your Terrarium (Fast)",
+            "url": "http://dev-site.local/?p=166",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 391,
+            "title": "Gnats Every Time You Open the Lid? Emergency Trap Inside the Terrarium Jar",
+            "url": "http://dev-site.local/?p=391",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 540,
+            "title": "Gnat Control on a Budget: DIY Traps That Work in Terrarium Jars",
+            "url": "http://dev-site.local/?p=540",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 396,
+            "title": "Gnats in Your Terrarium Jar? How to Identify Fungus Gnats vs Fruit Flies",
+            "url": "http://dev-site.local/?p=396",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 424,
+            "title": "How to Get Rid of Gnats in a Terrarium Jar Without Killing Plants",
+            "url": "http://dev-site.local/?p=424",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        }
+    ]
+}

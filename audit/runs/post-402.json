@@ -1,0 +1,46 @@
+{
+    "mode": "ai-failed-fallback",
+    "message": "AI ranking unavailable; showing semantic matches. cURL error 28: Operation timed out after 45006 milliseconds with 0 bytes received",
+    "suggestions": [
+        {
+            "post_id": 403,
+            "title": "Why Even 'Self-Sustaining' Terrarium Jars Need Occasional Opening: The Ecosystem Science",
+            "url": "http://dev-site.local/?p=403",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 177,
+            "title": "Open vs Closed Terrariums: Match Your Plants to the Perfect",
+            "url": "http://dev-site.local/?p=177",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 330,
+            "title": "Closed Terrarium Jar vs Open Terrarium Jar Plants: Which Species for Which?",
+            "url": "http://dev-site.local/?p=330",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 446,
+            "title": "Closed Terrarium Jar vs Open Terrarium Jar Longevity: Which Lasts Longer With Less Work?",
+            "url": "http://dev-site.local/?p=446",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 70,
+            "title": "Terrarium Gas Exchange: Maintaining O2/CO2 Balance in",
+            "url": "http://dev-site.local/?p=70",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        }
+    ]
+}

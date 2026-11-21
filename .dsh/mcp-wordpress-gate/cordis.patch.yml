@@ -1,0 +1,28 @@
+# Project-gated MCP registration.
+#
+# Mounts the local plugin that registers the WordPress MCP server only for
+# sessions whose working directory is inside this plugin checkout. The
+# registration is a plugin effect, so disabling this bundle removes the server
+# everywhere without leaving a stale entry behind.
+#
+# `authHeader` resolves at runtime through the credentials provider, so the
+# Basic credential never appears in this file or in the profile patch.
+
+- insert:
+    - id: mcp-wordpress-gate
+      name: '@local/dsh-mcp-wordpress-gate'
+      config:
+        serverName: my-wordpress-site
+        # Gating directory: sessions at or below this path receive the server.
+        projectDir: /Users/mdabutalhatonmoy/DevKinsta/public/dev-site/wp-content/plugins/knowledgespark
+        # Streamable HTTP endpoint, used directly. DSH's MCP client speaks this
+        # transport natively, so no `npx mcp-remote` bridge process is needed.
+        url: http://dev-site.local/wp-json/mcp/mcp-adapter-default-server
+        # `${credential:REF}` is expanded by mcp-client at connect time and the
+        # resolved value is redacted from diagnostics. Store the full header
+        # value via Settings > Credentials as WORDPRESS_MCP_AUTH.
+        authHeader: '${credential:WORDPRESS_MCP_AUTH}'
+        # interlink with AI review runs 30-90s+ server-side (the plugin's own
+        # AI call has a 120s budget), so the per-call timeout needs headroom:
+        # 180s matches the editor's browser-side suggest timeout.
+        toolCallTimeoutMs: 180000

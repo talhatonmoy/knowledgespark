@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "项目级 WordPress MCP",
+    "description": "仅当会话的工作目录位于本项目内时注册 WordPress MCP 服务器。其他项目与会话不会看到该服务器及其工具。",
+    "detail": "docs/DETAIL.md"
+  }
+}

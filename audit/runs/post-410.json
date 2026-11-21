@@ -1,0 +1,46 @@
+{
+    "mode": "ai-failed-fallback",
+    "message": "AI ranking unavailable; showing semantic matches. cURL error 28: Operation timed out after 45002 milliseconds with 0 bytes received",
+    "suggestions": [
+        {
+            "post_id": 403,
+            "title": "Why Even 'Self-Sustaining' Terrarium Jars Need Occasional Opening: The Ecosystem Science",
+            "url": "http://dev-site.local/?p=403",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 282,
+            "title": "Foggy Terrarium Terrarium Jar? How to Reduce Condensation Without Drying It Out",
+            "url": "http://dev-site.local/?p=282",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 406,
+            "title": "Terrarium Jar Crashing After You Sealed It? Rebalance Before Everything Dies",
+            "url": "http://dev-site.local/?p=406",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 307,
+            "title": "Why a Sealed Terrarium Jar Recycles Its Own Water: The Water Cycle Science",
+            "url": "http://dev-site.local/?p=307",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 539,
+            "title": "Self-Sustaining on a Budget: Free Local Materials That Actually Balance Terrariums",
+            "url": "http://dev-site.local/?p=539",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        }
+    ]
+}

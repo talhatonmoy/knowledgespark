@@ -1,0 +1,46 @@
+{
+    "mode": "ai-failed-fallback",
+    "message": "AI ranking unavailable; showing semantic matches. cURL error 28: Operation timed out after 45003 milliseconds with 0 bytes received",
+    "suggestions": [
+        {
+            "post_id": 388,
+            "title": "Gnats vs Fruit Flies in Terrarium Jars: How to Tell and Why It Matters",
+            "url": "http://dev-site.local/?p=388",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 166,
+            "title": "Get Rid of Fungus Gnats in Your Terrarium (Fast)",
+            "url": "http://dev-site.local/?p=166",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 394,
+            "title": "Fungus Gnat Infestation: Step-by-Step Elimination for Terrarium Jar Terrariums",
+            "url": "http://dev-site.local/?p=394",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 391,
+            "title": "Gnats Every Time You Open the Lid? Emergency Trap Inside the Terrarium Jar",
+            "url": "http://dev-site.local/?p=391",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 540,
+            "title": "Gnat Control on a Budget: DIY Traps That Work in Terrarium Jars",
+            "url": "http://dev-site.local/?p=540",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        }
+    ]
+}

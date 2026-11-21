@@ -1,0 +1,46 @@
+{
+    "mode": "ai-failed-fallback",
+    "message": "AI ranking unavailable; showing semantic matches. cURL error 28: Operation timed out after 45002 milliseconds with 0 bytes received",
+    "suggestions": [
+        {
+            "post_id": 282,
+            "title": "Foggy Terrarium Terrarium Jar? How to Reduce Condensation Without Drying It Out",
+            "url": "http://dev-site.local/?p=282",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 376,
+            "title": "Is It the Terrarium Jar\u2019s Fault or Yours? When Bad Manufacturing Is to Blame",
+            "url": "http://dev-site.local/?p=376",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 236,
+            "title": "\"My Terrarium Keeps Dying\" \u2014 5 Signs It\u2019s the Water, Not the Plant",
+            "url": "http://dev-site.local/?p=236",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 410,
+            "title": "Is Your Terrarium Jar Truly Self-Sustaining? 5 Tests for a Balanced Terrarium Jar",
+            "url": "http://dev-site.local/?p=410",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 295,
+            "title": "How Long Until Condensation Clears in Terrarium After Airing Out?",
+            "url": "http://dev-site.local/?p=295",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        }
+    ]
+}

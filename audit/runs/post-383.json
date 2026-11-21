@@ -1,0 +1,46 @@
+{
+    "mode": "ai-failed-fallback",
+    "message": "AI ranking unavailable; showing semantic matches. cURL error 28: Operation timed out after 45002 milliseconds with 0 bytes received",
+    "suggestions": [
+        {
+            "post_id": 152,
+            "title": "Brown Moss in Your Terrarium? Revive It or Start Over",
+            "url": "http://dev-site.local/?p=152",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 506,
+            "title": "The Moss Pre-Soak Method That Prevents Browning Terrarium From Day One",
+            "url": "http://dev-site.local/?p=506",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 384,
+            "title": "Why Backyard Moss Often Fails in Terrarium Jars: Sourcing & Cleaning Checklist",
+            "url": "http://dev-site.local/?p=384",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 412,
+            "title": "Best Moss for Terrarium Jars: Sheet, Cushion & Mood Moss Shopping Guide",
+            "url": "http://dev-site.local/?p=412",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        },
+        {
+            "post_id": 507,
+            "title": "Moss Dying in 4 Days? The Step-by-Step Terrarium Recovery Plan",
+            "url": "http://dev-site.local/?p=507",
+            "reason": "Related to the article or one of its sections. Reader usefulness has not been assessed by AI.",
+            "anchor": "",
+            "quote": ""
+        }
+    ]
+}

@@ -1,0 +1,781 @@
+{
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "queries": [
+        {
+            "index": 0,
+            "text": "Help! Terrarium Jar Is Swarming With Tiny Flies \u2014 What to Do Before They Spread {\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"headline\":\"Help! Terrarium Jar Is Swarming With Tiny Flies \u2014 What to Do Before They Spread\",\"description\":\"Help! Terrarium Jar Is Swarming With Tiny Flies, What to Do Before They Spread is exactly what you searched because you lifted the lid and a cloud of tiny\u2026\",\"datePublished\":\"2026-09-03\",\"dateModified\":\"2026-09-03\",\"mainEntityOfPage\":{\"@type\":\"WebPage\",\"@id\":\"https://jarhabitats.com/help-terrarium-jar-is-swarming-with-tiny-flies-what-to-do-before-they-spread\"},\"author\":{\"@type\":\"Person\",\"name\":\"Editorial Team\"},\"publisher\":{\"@type\":\"O"
+        },
+        {
+            "index": 1,
+            "text": "Help! Terrarium Jar Is Swarming With Tiny Flies \u2014 What to Do Before They Spread Quick Answer"
+        },
+        {
+            "index": 2,
+            "text": "Help! Terrarium Jar Is Swarming With Tiny Flies \u2014 What to Do Before They Spread That Swarm in Your Jar: What You're Actually Seeing"
+        },
+        {
+            "index": 3,
+            "text": "Help! Terrarium Jar Is Swarming With Tiny Flies \u2014 What to Do Before They Spread Fungus Gnats vs. Fruit Flies vs. Shore Flies: The 30-Second ID Check"
+        },
+        {
+            "index": 4,
+            "text": "Help! Terrarium Jar Is Swarming With Tiny Flies \u2014 What to Do Before They Spread Why Your Terrarium Jar Is the Perfect Breeding Ground"
+        },
+        {
+            "index": 5,
+            "text": "Help! Terrarium Jar Is Swarming With Tiny Flies \u2014 What to Do Before They Spread Do This Right Now: Quarantine Your Jar Before They Spread Housewide"
+        }
+    ],
+    "results": [
+        {
+            "query_index": 0,
+            "points": [
+                {
+                    "id": 392,
+                    "score": 0.6513911
+                },
+                {
+                    "id": 395,
+                    "score": 0.5281763
+                },
+                {
+                    "id": 155,
+                    "score": 0.5208592
+                },
+                {
+                    "id": 237,
+                    "score": 0.5151507
+                },
+                {
+                    "id": 131,
+                    "score": 0.5006438
+                },
+                {
+                    "id": 186,
+                    "score": 0.49746457
+                },
+                {
+                    "id": 391,
+                    "score": 0.49567842
+                },
+                {
+                    "id": 45,
+                    "score": 0.49326652
+                },
+                {
+                    "id": 208,
+                    "score": 0.49185666
+                },
+                {
+                    "id": 458,
+                    "score": 0.49095577
+                },
+                {
+                    "id": 283,
+                    "score": 0.48793992
+                },
+                {
+                    "id": 440,
+                    "score": 0.48319966
+                },
+                {
+                    "id": 317,
+                    "score": 0.4829219
+                },
+                {
+                    "id": 508,
+                    "score": 0.4821599
+                },
+                {
+                    "id": 242,
+                    "score": 0.4791593
+                },
+                {
+                    "id": 394,
+                    "score": 0.47792768
+                },
+                {
+                    "id": 107,
+                    "score": 0.4778211
+                },
+                {
+                    "id": 520,
+                    "score": 0.47781274
+                },
+                {
+                    "id": 161,
+                    "score": 0.47584042
+                },
+                {
+                    "id": 148,
+                    "score": 0.4747604
+                },
+                {
+                    "id": 243,
+                    "score": 0.4739406
+                },
+                {
+                    "id": 540,
+                    "score": 0.4717343
+                },
+                {
+                    "id": 254,
+                    "score": 0.471254
+                },
+                {
+                    "id": 259,
+                    "score": 0.47113773
+                },
+                {
+                    "id": 388,
+                    "score": 0.47020817
+                },
+                {
+                    "id": 53,
+                    "score": 0.4699696
+                },
+                {
+                    "id": 527,
+                    "score": 0.46942937
+                },
+                {
+                    "id": 384,
+                    "score": 0.46902758
+                },
+                {
+                    "id": 193,
+                    "score": 0.46839032
+                },
+                {
+                    "id": 516,
+                    "score": 0.46820468
+                }
+            ]
+        },
+        {
+            "query_index": 1,
+            "points": [
+                {
+                    "id": 392,
+                    "score": 0.7795987
+                },
+                {
+                    "id": 395,
+                    "score": 0.6505774
+                },
+                {
+                    "id": 394,
+                    "score": 0.6415423
+                },
+                {
+                    "id": 391,
+                    "score": 0.62653935
+                },
+                {
+                    "id": 166,
+                    "score": 0.625389
+                },
+                {
+                    "id": 540,
+                    "score": 0.6141772
+                },
+                {
+                    "id": 458,
+                    "score": 0.5857429
+                },
+                {
+                    "id": 424,
+                    "score": 0.57401776
+                },
+                {
+                    "id": 171,
+                    "score": 0.5684336
+                },
+                {
+                    "id": 388,
+                    "score": 0.5626018
+                },
+                {
+                    "id": 167,
+                    "score": 0.56239855
+                },
+                {
+                    "id": 396,
+                    "score": 0.5423355
+                },
+                {
+                    "id": 501,
+                    "score": 0.5366142
+                },
+                {
+                    "id": 282,
+                    "score": 0.5325638
+                },
+                {
+                    "id": 440,
+                    "score": 0.53224397
+                },
+                {
+                    "id": 157,
+                    "score": 0.5318225
+                },
+                {
+                    "id": 317,
+                    "score": 0.5275318
+                },
+                {
+                    "id": 53,
+                    "score": 0.52740896
+                },
+                {
+                    "id": 131,
+                    "score": 0.52714527
+                },
+                {
+                    "id": 306,
+                    "score": 0.5239549
+                },
+                {
+                    "id": 283,
+                    "score": 0.5219499
+                },
+                {
+                    "id": 161,
+                    "score": 0.5201895
+                },
+                {
+                    "id": 389,
+                    "score": 0.5157925
+                },
+                {
+                    "id": 256,
+                    "score": 0.51531947
+                },
+                {
+                    "id": 459,
+                    "score": 0.51449454
+                },
+                {
+                    "id": 359,
+                    "score": 0.5139091
+                },
+                {
+                    "id": 275,
+                    "score": 0.5132446
+                },
+                {
+                    "id": 365,
+                    "score": 0.51296043
+                },
+                {
+                    "id": 237,
+                    "score": 0.51291585
+                },
+                {
+                    "id": 143,
+                    "score": 0.5106293
+                }
+            ]
+        },
+        {
+            "query_index": 2,
+            "points": [
+                {
+                    "id": 392,
+                    "score": 0.78404945
+                },
+                {
+                    "id": 395,
+                    "score": 0.67271096
+                },
+                {
+                    "id": 394,
+                    "score": 0.6297012
+                },
+                {
+                    "id": 166,
+                    "score": 0.61320245
+                },
+                {
+                    "id": 391,
+                    "score": 0.6107857
+                },
+                {
+                    "id": 540,
+                    "score": 0.5780504
+                },
+                {
+                    "id": 388,
+                    "score": 0.57578826
+                },
+                {
+                    "id": 396,
+                    "score": 0.5650252
+                },
+                {
+                    "id": 458,
+                    "score": 0.5614697
+                },
+                {
+                    "id": 282,
+                    "score": 0.55954957
+                },
+                {
+                    "id": 167,
+                    "score": 0.5500959
+                },
+                {
+                    "id": 359,
+                    "score": 0.5495009
+                },
+                {
+                    "id": 424,
+                    "score": 0.5410354
+                },
+                {
+                    "id": 182,
+                    "score": 0.54086393
+                },
+                {
+                    "id": 306,
+                    "score": 0.5403217
+                },
+                {
+                    "id": 171,
+                    "score": 0.53469026
+                },
+                {
+                    "id": 317,
+                    "score": 0.53187454
+                },
+                {
+                    "id": 157,
+                    "score": 0.5308772
+                },
+                {
+                    "id": 352,
+                    "score": 0.5288693
+                },
+                {
+                    "id": 365,
+                    "score": 0.52771443
+                },
+                {
+                    "id": 406,
+                    "score": 0.52656615
+                },
+                {
+                    "id": 170,
+                    "score": 0.5260046
+                },
+                {
+                    "id": 426,
+                    "score": 0.5219702
+                },
+                {
+                    "id": 325,
+                    "score": 0.5193544
+                },
+                {
+                    "id": 197,
+                    "score": 0.5185909
+                },
+                {
+                    "id": 131,
+                    "score": 0.517778
+                },
+                {
+                    "id": 237,
+                    "score": 0.51670754
+                },
+                {
+                    "id": 376,
+                    "score": 0.5134829
+                },
+                {
+                    "id": 501,
+                    "score": 0.5129107
+                },
+                {
+                    "id": 235,
+                    "score": 0.5129107
+                }
+            ]
+        },
+        {
+            "query_index": 3,
+            "points": [
+                {
+                    "id": 392,
+                    "score": 0.799208
+                },
+                {
+                    "id": 394,
+                    "score": 0.79011154
+                },
+                {
+                    "id": 166,
+                    "score": 0.78129846
+                },
+                {
+                    "id": 391,
+                    "score": 0.7269898
+                },
+                {
+                    "id": 540,
+                    "score": 0.72519875
+                },
+                {
+                    "id": 388,
+                    "score": 0.7168901
+                },
+                {
+                    "id": 396,
+                    "score": 0.71385056
+                },
+                {
+                    "id": 424,
+                    "score": 0.70954067
+                },
+                {
+                    "id": 171,
+                    "score": 0.6932454
+                },
+                {
+                    "id": 389,
+                    "score": 0.6591359
+                },
+                {
+                    "id": 501,
+                    "score": 0.65692055
+                },
+                {
+                    "id": 395,
+                    "score": 0.6442478
+                },
+                {
+                    "id": 170,
+                    "score": 0.6384639
+                },
+                {
+                    "id": 167,
+                    "score": 0.63654745
+                },
+                {
+                    "id": 393,
+                    "score": 0.6208571
+                },
+                {
+                    "id": 425,
+                    "score": 0.581908
+                },
+                {
+                    "id": 164,
+                    "score": 0.5410329
+                },
+                {
+                    "id": 429,
+                    "score": 0.53793514
+                },
+                {
+                    "id": 352,
+                    "score": 0.53767765
+                },
+                {
+                    "id": 365,
+                    "score": 0.5357687
+                },
+                {
+                    "id": 458,
+                    "score": 0.533841
+                },
+                {
+                    "id": 143,
+                    "score": 0.5322888
+                },
+                {
+                    "id": 359,
+                    "score": 0.52500546
+                },
+                {
+                    "id": 355,
+                    "score": 0.523287
+                },
+                {
+                    "id": 157,
+                    "score": 0.52081174
+                },
+                {
+                    "id": 131,
+                    "score": 0.5170419
+                },
+                {
+                    "id": 275,
+                    "score": 0.5109738
+                },
+                {
+                    "id": 500,
+                    "score": 0.50859106
+                },
+                {
+                    "id": 357,
+                    "score": 0.5080142
+                },
+                {
+                    "id": 368,
+                    "score": 0.5066021
+                }
+            ]
+        },
+        {
+            "query_index": 4,
+            "points": [
+                {
+                    "id": 392,
+                    "score": 0.7634104
+                },
+                {
+                    "id": 394,
+                    "score": 0.64099157
+                },
+                {
+                    "id": 391,
+                    "score": 0.6265049
+                },
+                {
+                    "id": 395,
+                    "score": 0.61818635
+                },
+                {
+                    "id": 166,
+                    "score": 0.60587645
+                },
+                {
+                    "id": 540,
+                    "score": 0.60184824
+                },
+                {
+                    "id": 458,
+                    "score": 0.5846771
+                },
+                {
+                    "id": 501,
+                    "score": 0.57732785
+                },
+                {
+                    "id": 388,
+                    "score": 0.57403755
+                },
+                {
+                    "id": 424,
+                    "score": 0.569154
+                },
+                {
+                    "id": 393,
+                    "score": 0.5688428
+                },
+                {
+                    "id": 317,
+                    "score": 0.5644997
+                },
+                {
+                    "id": 171,
+                    "score": 0.5591169
+                },
+                {
+                    "id": 256,
+                    "score": 0.55430406
+                },
+                {
+                    "id": 416,
+                    "score": 0.5526616
+                },
+                {
+                    "id": 282,
+                    "score": 0.5518738
+                },
+                {
+                    "id": 167,
+                    "score": 0.54804385
+                },
+                {
+                    "id": 157,
+                    "score": 0.54601127
+                },
+                {
+                    "id": 131,
+                    "score": 0.5453117
+                },
+                {
+                    "id": 306,
+                    "score": 0.5431026
+                },
+                {
+                    "id": 459,
+                    "score": 0.54239005
+                },
+                {
+                    "id": 406,
+                    "score": 0.53857934
+                },
+                {
+                    "id": 258,
+                    "score": 0.5381789
+                },
+                {
+                    "id": 335,
+                    "score": 0.53346777
+                },
+                {
+                    "id": 340,
+                    "score": 0.5326381
+                },
+                {
+                    "id": 389,
+                    "score": 0.5319083
+                },
+                {
+                    "id": 216,
+                    "score": 0.5315566
+                },
+                {
+                    "id": 440,
+                    "score": 0.5298183
+                },
+                {
+                    "id": 390,
+                    "score": 0.5269135
+                },
+                {
+                    "id": 170,
+                    "score": 0.52669865
+                }
+            ]
+        },
+        {
+            "query_index": 5,
+            "points": [
+                {
+                    "id": 392,
+                    "score": 0.772014
+                },
+                {
+                    "id": 394,
+                    "score": 0.64061266
+                },
+                {
+                    "id": 395,
+                    "score": 0.6262155
+                },
+                {
+                    "id": 391,
+                    "score": 0.61842865
+                },
+                {
+                    "id": 166,
+                    "score": 0.6146761
+                },
+                {
+                    "id": 540,
+                    "score": 0.61242527
+                },
+                {
+                    "id": 424,
+                    "score": 0.5825677
+                },
+                {
+                    "id": 458,
+                    "score": 0.54971695
+                },
+                {
+                    "id": 167,
+                    "score": 0.541275
+                },
+                {
+                    "id": 501,
+                    "score": 0.54081255
+                },
+                {
+                    "id": 171,
+                    "score": 0.5390906
+                },
+                {
+                    "id": 388,
+                    "score": 0.5368911
+                },
+                {
+                    "id": 282,
+                    "score": 0.5301613
+                },
+                {
+                    "id": 389,
+                    "score": 0.5272038
+                },
+                {
+                    "id": 492,
+                    "score": 0.52360487
+                },
+                {
+                    "id": 359,
+                    "score": 0.5233995
+                },
+                {
+                    "id": 157,
+                    "score": 0.5203726
+                },
+                {
+                    "id": 393,
+                    "score": 0.51790607
+                },
+                {
+                    "id": 256,
+                    "score": 0.514374
+                },
+                {
+                    "id": 259,
+                    "score": 0.5109825
+                },
+                {
+                    "id": 429,
+                    "score": 0.5079707
+                },
+                {
+                    "id": 131,
+                    "score": 0.50689226
+                },
+                {
+                    "id": 406,
+                    "score": 0.50589365
+                },
+                {
+                    "id": 440,
+                    "score": 0.5052254
+                },
+                {
+                    "id": 396,
+                    "score": 0.50458425
+                },
+                {
+                    "id": 306,
+                    "score": 0.5038859
+                },
+                {
+                    "id": 237,
+                    "score": 0.5022131
+                },
+                {
+                    "id": 143,
+                    "score": 0.5020208
+                },
+                {
+                    "id": 170,
+                    "score": 0.5011758
+                },
+                {
+                    "id": 283,
+                    "score": 0.50052726
+                }
+            ]
+        }
+    ]
+}

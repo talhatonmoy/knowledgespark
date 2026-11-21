@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Project-scoped WordPress MCP",
+    "description": "Registers the WordPress MCP server only for sessions whose working directory is inside this plugin's project. Other projects and sessions never see the server or its tools.",
+    "detail": "docs/DETAIL.md"
+  }
+}

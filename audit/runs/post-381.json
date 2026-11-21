@@ -1,0 +1,46 @@
+{
+    "mode": "ai",
+    "message": "AI-reviewed suggestions. Verify the target and placement before linking.",
+    "suggestions": [
+        {
+            "post_id": 254,
+            "title": "Lid Won\u2019t Close Properly? How to Tell If It\u2019s the Terrarium Jar or the Seal",
+            "url": "http://dev-site.local/?p=254",
+            "reason": "Readers whose replacement lid doesn't fit need a way to diagnose whether the jar or the seal is at fault before buying again; this diagnostic guide answers that directly.",
+            "anchor": "won't seat or won't seal",
+            "quote": "Match the wrong one and the lid either won't seat or won't seal."
+        },
+        {
+            "post_id": 269,
+            "title": "Best Airtight Jars for Terrariums: Where to Buy Kilner, Cork & Clasp Jars",
+            "url": "http://dev-site.local/?p=269",
+            "reason": "Readers who need both pieces get brand-specific airtight bundle options (Kilner, clasp-top, cork) and seal-quality guidance beyond the mason-jar bundles listed here.",
+            "anchor": "jar-and-lid bundle",
+            "quote": "A full jar-and-lid bundle from the same manufacturer is the safest bet."
+        },
+        {
+            "post_id": 129,
+            "title": "Terrarium Lids & Seals: Cork, Glass, Acrylic & Custom",
+            "url": "http://dev-site.local/?p=129",
+            "reason": "The article already points readers to a lid and seal materials resource; linking it gives specialty-jar owners concrete guidance on gasket and lid material choices for humidity control.",
+            "anchor": "lid and seal materials breakdown",
+            "quote": "For insights on how lid material affects humidity in specialty terrariums, see our lid and seal materials breakdown."
+        },
+        {
+            "post_id": 372,
+            "title": "Terrarium Jar Cracked? Is It Safe to Reuse or Should You Replace It?",
+            "url": "http://dev-site.local/?p=372",
+            "reason": "Secondhand and vintage buyers need to know whether a jar with rim chips or cracks is safe to reuse or should be rejected; this guide provides that reuse-or-replace decision logic.",
+            "anchor": "chipped rim",
+            "quote": "A chipped rim won't seal properly and can crack under heat or pressure."
+        },
+        {
+            "post_id": 341,
+            "title": "Need a Terrarium Jar Today? Quick DIY Alternatives From Kitchen Terrarium Jars",
+            "url": "http://dev-site.local/?p=341",
+            "reason": "Readers considering a repurposed food jar instead of buying a replacement get a full walkthrough of cleaning, safety checks, and setup for kitchen-jar terrariums.",
+            "anchor": "Bring your own threaded lid",
+            "quote": "Bring your own threaded lid if the original doesn't fit."
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Project-scoped MCP connection">
+  <g fill="none" stroke="#2f6f4f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 14h10M8 24h10M8 34h10"/>
+    <path d="M30 24h10"/>
+    <path d="M22 24a4 4 0 0 1 4-4h0a4 4 0 0 1 4 4v0a4 4 0 0 1-4 4h0a4 4 0 0 1-4-4z"/>
+  </g>
+  <path d="M33 17l7 7-7 7" fill="none" stroke="#c9762c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="22" cy="24" r="2.5" fill="#2f6f4f"/>
+</svg>

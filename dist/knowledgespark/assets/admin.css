@@ -1,0 +1,198 @@
+/* KnowledgeSpark admin controls: quiet canvas with an electric ink accent. */
+#knowledgespark-editor,
+#ks-index-controls {
+    --ks-ink: #172b4d;
+    --ks-muted: #526277;
+    --ks-line: #d6dde7;
+    --ks-paper: #f7f9fc;
+    --ks-accent: #1769aa;
+    --ks-accent-soft: #e8f2fb;
+    --ks-good: #216e4e;
+    --ks-bad: #b32d2e;
+    max-width: 760px;
+    margin: 20px 0;
+    color: var(--ks-ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+#knowledgespark-editor { max-width: none; }
+#ks-index-controls .ks-index-warning {
+    padding: 12px 16px;
+    border-left: 4px solid #dba617;
+    background: #fff8e5;
+}
+
+#knowledgespark-editor > label,
+#ks-index-controls > label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ks-muted);
+}
+
+#ks-count {
+    width: 72px;
+    margin-right: 8px;
+}
+
+#ks-apply-all { margin-left: 8px; }
+
+#knowledgespark-editor .button-primary,
+#ks-index-controls .button-primary {
+    border: 0;
+    background: var(--ks-ink);
+    box-shadow: 0 2px 0 #071426;
+    color: #fff;
+}
+
+#knowledgespark-editor .button-primary:hover,
+#knowledgespark-editor .button-primary:focus,
+#ks-index-controls .button-primary:hover,
+#ks-index-controls .button-primary:focus {
+    background: var(--ks-accent);
+}
+
+#ks-results,
+#ks-index-status {
+    margin-top: 16px;
+}
+
+.ks-help,
+.ks-notice {
+    margin: 12px 0;
+    color: var(--ks-muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.ks-notice {
+    padding: 12px 14px;
+    border-left: 3px solid var(--ks-accent);
+    background: var(--ks-paper);
+}
+
+.ks-notice--success { border-left-color: var(--ks-good); color: var(--ks-good); }
+.ks-notice--error { border-left-color: var(--ks-bad); color: var(--ks-bad); }
+
+.ks-suggestions {
+    display: grid;
+    gap: 12px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ks-suggestion {
+    position: relative;
+    padding: 16px 18px 18px;
+    border: 1px solid var(--ks-line);
+    border-radius: 2px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(23, 43, 77, .06);
+}
+
+.ks-suggestion::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+    background: var(--ks-accent);
+    content: "";
+}
+
+.ks-suggestion-title {
+    margin: 0 0 14px 0;
+    font-size: 15px;
+    line-height: 1.35;
+}
+
+.ks-suggestion-title a { color: var(--ks-accent); }
+
+.ks-detail {
+    margin: 10px 0;
+}
+
+.ks-detail-label {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--ks-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.ks-detail p,
+.ks-detail blockquote {
+    margin: 0;
+    color: var(--ks-ink);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.ks-detail blockquote {
+    padding-left: 10px;
+    border-left: 2px solid var(--ks-line);
+    font-style: italic;
+}
+
+.ks-url {
+    display: block;
+    width: 100%;
+    margin: 14px 0 8px;
+    color: var(--ks-muted);
+    font-size: 12px;
+}
+
+.ks-copy-status {
+    display: inline-block;
+    margin-left: 8px;
+    color: var(--ks-good);
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+#ks-index-controls {
+    padding: 18px;
+    border: 1px solid var(--ks-line);
+    border-top: 4px solid var(--ks-accent);
+    background: #fff;
+}
+
+#ks-index-controls .button { margin: 0 6px 6px 0; }
+#ks-index-controls .ks-cancel { color: var(--ks-bad); }
+
+.ks-index-errors {
+    max-height: 180px;
+    overflow: auto;
+    margin: 10px 0;
+    padding-left: 28px;
+    color: var(--ks-bad);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#knowledgespark-editor button:disabled,
+#ks-index-controls button:disabled { cursor: wait; opacity: .65; }
+
+#knowledgespark-editor button:focus-visible,
+#ks-index-controls button:focus-visible,
+#knowledgespark-editor input:focus-visible,
+#ks-index-controls input:focus-visible {
+    outline: 3px solid rgba(23, 105, 170, .35);
+    outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+    #knowledgespark-editor .button,
+    #ks-index-controls .button { margin-top: 8px; }
+    .ks-copy-status { display: block; margin: 8px 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

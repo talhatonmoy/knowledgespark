@@ -1,0 +1,9 @@
+  private static function parse_rank_response($response) {
+   $content=$response['choices'][0]['message']['content'] ?? '';
+   if(!is_string($content)) { return null; }
+   $content=trim($content);
+   if(strncmp($content,'```',3)===0) { $content=preg_replace('/^\s*```[a-zA-Z0-9]*\s*|```\s*$/s','',$content); }
+   $decoded=json_decode($content,true);
+   if(!is_array($decoded) || !isset($decoded['suggestions']) || !is_array($decoded['suggestions'])) { return null; }
+   return $decoded;
+  }
